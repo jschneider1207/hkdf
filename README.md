@@ -1,6 +1,6 @@
 # HKDF
 
-Provides a simple Hashed Message Authentication Code (HMAC)-based
+Provides a simple Hashed Message Authentication Code (HMAC)-based
 key derivation function (HKDF).
 
 Based on algorithm defined in [rfc 5859](https://tools.ietf.org/html/rfc5869).
