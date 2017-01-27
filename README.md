@@ -7,7 +7,7 @@ Based on the algorithm defined in [rfc 5859](https://tools.ietf.org/html/rfc5869
 
 ## Usage
 
-Derive Key:
+Derive key:
 ```elixir
 HKDF.derive(:sha256, "some input", 42, "optional salt", "optional secret message")
 ```
