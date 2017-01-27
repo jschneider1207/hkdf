@@ -12,12 +12,12 @@ Derive Key:
 HKDF.derive(:sha256, "some input", 42, "optional salt", "optional secret message")
 ```
 
-Extract output key material:
+Expand pseudorandom key:
 ```elixir
 HKDF.extract(:sha256, "some input", "optional salt")
 ```
 
-Expand pseudorandom key:
+Extract output key material:
 ```elixir
 prk = HKDF.extract(:sha256, "some input", "optional salt")
 HKDF.expand(:sha256, prk, 16, "optional secret message")
