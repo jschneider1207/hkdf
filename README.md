@@ -15,7 +15,7 @@ HKDF.extract(:sha256, "some input", "optional salt")
 Expand pseudorandom key:
 ```elixir
 prk = HKDF.extract(:sha256, "some input", "optional salt")
-HKDF.expand(:sha256, prk, 16, "secret message")
+HKDF.expand(:sha256, prk, 16, "optional secret message")
 ```
 
 ## Installation
