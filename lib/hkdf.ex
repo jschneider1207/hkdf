@@ -25,7 +25,7 @@ defmodule HKDF do
   @type output_key_material :: binary
 
   @doc """
-  Dervice a key of a specific length using the specified hash function.
+  Derives a key of a specific length using the specified hash function.
 
   An optional salt (extract phase) and/or info message (expand phase)
   can be supplied.
