@@ -61,7 +61,7 @@ defmodule HKDF do
   """
   @spec extract(hash_fun, input_key_material, salt) :: pseudorandom_key
   def extract(hash_fun, ikm, salt \\ "") do
-    :crypto.hmac(hash_fun, salt, ikm)
+    :crypto.mac(:hmac, hash_fun, salt, ikm)
   end
 
   @doc """
@@ -85,7 +85,7 @@ defmodule HKDF do
     full =
       Enum.scan(1..n, "", fn index, prev ->
       data = prev <> info <> <<index>>
-      :crypto.hmac(hash_fun, prk, data)
+      :crypto.mac(:hmac, hash_fun, prk, data)
       end)
       |> Enum.reduce("", &Kernel.<>(&2, &1))
     <<output :: unit(8)-size(len), _ :: binary>> = full
