@@ -7,10 +7,8 @@ defmodule HKDF do
 
   Keys are derived in two steps:
 
-    1. Extract - a pseudorandom key is extracted from an input key material
-                 and optional salt.
-    2. Expand - an output key material of a specific length is expanded from
-                hashes of the pseudorandom key and an optional info message.
+    1. Extract - a pseudorandom key is extracted from an input key material and optional salt.
+    2. Expand - an output key material of a specific length is expanded from hashes of the pseudorandom key and an optional info message.
 
   ## Source
 
