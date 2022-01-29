@@ -33,8 +33,8 @@ defmodule HKDF.Mixfile do
   defp package do
     [name: :hkdf,
      files: ["lib", "mix.exs", "README*", "LICENSE*"],
-     maintainers: ["Sam Schneider"],
+     maintainers: ["Jessica Schneider"],
      licenses: ["MIT"],
-     links: %{"GitHub" => "https://github.com/sschneider1207/hkdf"}]
+     links: %{"GitHub" => "https://github.com/jschneider1207/hkdf"}]
   end
 end
