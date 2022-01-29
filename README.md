@@ -30,7 +30,7 @@ by adding `hkdf` to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
-  [{:hkdf, "~> 0.1.0"}]
+  [{:hkdf, "~> 0.2.0"}]
 end
 ```
 
