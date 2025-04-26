@@ -14,13 +14,18 @@ defmodule HKDF do
 
   Defined in [rfc 5859](https://tools.ietf.org/html/rfc5869)
   """
-  @type hash_fun :: :md5 | :sha | :sha224 | :sha256 | :sha384 | :sha512
-  @type input_key_material :: binary
-  @type salt :: binary
-  @type pseudorandom_key :: binary
-  @type length :: non_neg_integer
-  @type info :: binary
-  @type output_key_material :: binary
+  @type hash_fun :: sha1() | sha2() | sha3() | compatibility_only_hash()
+  @type sha1 :: :sha
+  @type sha2 :: :sha224 | :sha256 | :sha384 | :sha512
+  @type sha3 :: :sha3_224 | :sha3_256 | :sha3_384 | :sha3_512
+  @typedoc "The `compatibility_only_hash/0` algorithms are recommended only for compatibility with existing applications."
+  @type compatibility_only_hash :: :md4 | :md5
+  @type input_key_material :: binary()
+  @type salt :: binary()
+  @type pseudorandom_key :: binary()
+  @type length :: non_neg_integer()
+  @type info :: binary()
+  @type output_key_material :: binary()
 
   @doc """
   Derives a key of a specific length using the specified hash function.
@@ -79,19 +84,22 @@ defmodule HKDF do
   @spec expand(hash_fun, pseudorandom_key, length, info) :: output_key_material
   def expand(hash_fun, prk, len, info \\ "") do
     hash_len = hash_length(hash_fun)
-    n = Float.ceil(len/hash_len) |> round()
+    n = Float.ceil(len / hash_len) |> round()
+
     full =
       Enum.scan(1..n, "", fn index, prev ->
-      data = prev <> info <> <<index>>
-      :crypto.mac(:hmac, hash_fun, prk, data)
+        data = prev <> info <> <<index>>
+        :crypto.mac(:hmac, hash_fun, prk, data)
       end)
       |> Enum.reduce("", &Kernel.<>(&2, &1))
-    <<output :: unit(8)-size(len), _ :: binary>> = full
-    <<output :: unit(8)-size(len)>>
+
+    <<output::unit(8)-size(len), _::binary>> = full
+    <<output::unit(8)-size(len)>>
   end
 
-  for fun <- ~w(md5 sha sha224 sha256 sha384 sha512)a do
+  for fun <- ~w(md4 md5 sha sha224 sha256 sha384 sha512 sha3_224 sha3_256 sha3_384 sha3_512)a do
     len = fun |> :crypto.hash("") |> byte_size()
+
     defp hash_length(unquote(fun)) do
       unquote(len)
     end
