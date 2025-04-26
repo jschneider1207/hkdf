@@ -8,6 +8,7 @@ defmodule HKDFTest do
       expected =
         :crypto.hash(fun, "")
         |> byte_size()
+
       key = HKDF.extract(fun, "secret")
 
       assert byte_size(key) === expected
@@ -17,6 +18,7 @@ defmodule HKDFTest do
       expected =
         :crypto.hash(fun, "")
         |> byte_size()
+
       salt = :crypto.strong_rand_bytes(expected)
       key = HKDF.extract(fun, "secret", salt)
 
@@ -45,67 +47,129 @@ defmodule HKDFTest do
   describe "rfc 5869 test cases" do
     test "basic sha-256" do
       hash = :sha256
-      ikm = <<0x0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b :: unit(8)-size(22)>>
-      salt = <<0x000102030405060708090a0b0c :: unit(8)-size(13)>>
-      info = <<0xf0f1f2f3f4f5f6f7f8f9 :: unit(8)-size(10)>>
+      ikm = <<0x0B0B0B0B0B0B0B0B0B0B0B0B0B0B0B0B0B0B0B0B0B0B::unit(8)-size(22)>>
+      salt = <<0x000102030405060708090A0B0C::unit(8)-size(13)>>
+      info = <<0xF0F1F2F3F4F5F6F7F8F9::unit(8)-size(10)>>
       l = 42
-      prk = <<0x077709362c2e32df0ddc3f0dc47bba6390b6c73bb50f9c3122ec844ad7c2b3e5 :: unit(8)-size(32)>>
-      okm = <<0x3cb25f25faacd57a90434f64d0362f2a2d2d0a90cf1a5a4c5db02d56ecc4c5bf34007208d5b887185865 :: unit(8)-size(l)>>
+
+      prk =
+        <<0x077709362C2E32DF0DDC3F0DC47BBA6390B6C73BB50F9C3122EC844AD7C2B3E5::unit(8)-size(32)>>
+
+      okm =
+        <<0x3CB25F25FAACD57A90434F64D0362F2A2D2D0A90CF1A5A4C5DB02D56ECC4C5BF34007208D5B887185865::unit(
+            8
+          )-size(l)>>
+
       test_case(hash, ikm, salt, info, l, prk, okm)
     end
 
     test "sha-256 with longer input/ouputs" do
       hash = :sha256
-      ikm = <<0x000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f404142434445464748494a4b4c4d4e4f :: unit(8)-size(80)>>
-      salt = <<0x606162636465666768696a6b6c6d6e6f707172737475767778797a7b7c7d7e7f808182838485868788898a8b8c8d8e8f909192939495969798999a9b9c9d9e9fa0a1a2a3a4a5a6a7a8a9aaabacadaeaf :: unit(8)-size(80)>>
-      info = <<0xb0b1b2b3b4b5b6b7b8b9babbbcbdbebfc0c1c2c3c4c5c6c7c8c9cacbcccdcecfd0d1d2d3d4d5d6d7d8d9dadbdcdddedfe0e1e2e3e4e5e6e7e8e9eaebecedeeeff0f1f2f3f4f5f6f7f8f9fafbfcfdfeff :: unit(8)-size(80)>>
+
+      ikm =
+        <<0x000102030405060708090A0B0C0D0E0F101112131415161718191A1B1C1D1E1F202122232425262728292A2B2C2D2E2F303132333435363738393A3B3C3D3E3F404142434445464748494A4B4C4D4E4F::unit(
+            8
+          )-size(80)>>
+
+      salt =
+        <<0x606162636465666768696A6B6C6D6E6F707172737475767778797A7B7C7D7E7F808182838485868788898A8B8C8D8E8F909192939495969798999A9B9C9D9E9FA0A1A2A3A4A5A6A7A8A9AAABACADAEAF::unit(
+            8
+          )-size(80)>>
+
+      info =
+        <<0xB0B1B2B3B4B5B6B7B8B9BABBBCBDBEBFC0C1C2C3C4C5C6C7C8C9CACBCCCDCECFD0D1D2D3D4D5D6D7D8D9DADBDCDDDEDFE0E1E2E3E4E5E6E7E8E9EAEBECEDEEEFF0F1F2F3F4F5F6F7F8F9FAFBFCFDFEFF::unit(
+            8
+          )-size(80)>>
+
       l = 82
-      prk = <<0x06a6b88c5853361a06104c9ceb35b45cef760014904671014a193f40c15fc244 :: unit(8)-size(32)>>
-      okm = <<0xb11e398dc80327a1c8e7f78c596a49344f012eda2d4efad8a050cc4c19afa97c59045a99cac7827271cb41c65e590e09da3275600c2f09b8367793a9aca3db71cc30c58179ec3e87c14c01d5c1f3434f1d87 :: unit(8)-size(l)>>
+
+      prk =
+        <<0x06A6B88C5853361A06104C9CEB35B45CEF760014904671014A193F40C15FC244::unit(8)-size(32)>>
+
+      okm =
+        <<0xB11E398DC80327A1C8E7F78C596A49344F012EDA2D4EFAD8A050CC4C19AFA97C59045A99CAC7827271CB41C65E590E09DA3275600C2F09B8367793A9ACA3DB71CC30C58179EC3E87C14C01D5C1F3434F1D87::unit(
+            8
+          )-size(l)>>
+
       test_case(hash, ikm, salt, info, l, prk, okm)
     end
 
     test "sha-256 with zero length salt/info" do
       hash = :sha256
-      ikm = <<0x0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b :: unit(8)-size(22)>>
+      ikm = <<0x0B0B0B0B0B0B0B0B0B0B0B0B0B0B0B0B0B0B0B0B0B0B::unit(8)-size(22)>>
       salt = ""
       info = ""
       l = 42
-      prk = <<0x19ef24a32c717b167f33a91d6f648bdf96596776afdb6377ac434c1c293ccb04 :: unit(8)-size(32)>>
-      okm = <<0x8da4e775a563c18f715f802a063c5a31b8a11f5c5ee1879ec3454e5f3c738d2d9d201395faa4b61a96c8 :: unit(8)-size(l)>>
+
+      prk =
+        <<0x19EF24A32C717B167F33A91D6F648BDF96596776AFDB6377AC434C1C293CCB04::unit(8)-size(32)>>
+
+      okm =
+        <<0x8DA4E775A563C18F715F802A063C5A31B8A11F5C5EE1879EC3454E5F3C738D2D9D201395FAA4B61A96C8::unit(
+            8
+          )-size(l)>>
+
       test_case(hash, ikm, salt, info, l, prk, okm)
     end
 
     test "basic sha-1" do
       hash = :sha
-      ikm = <<0x0b0b0b0b0b0b0b0b0b0b0b :: unit(8)-size(11)>>
-      salt = <<0x000102030405060708090a0b0c :: unit(8)-size(13)>>
-      info = <<0xf0f1f2f3f4f5f6f7f8f9 :: unit(8)-size(10)>>
+      ikm = <<0x0B0B0B0B0B0B0B0B0B0B0B::unit(8)-size(11)>>
+      salt = <<0x000102030405060708090A0B0C::unit(8)-size(13)>>
+      info = <<0xF0F1F2F3F4F5F6F7F8F9::unit(8)-size(10)>>
       l = 42
-      prk = <<0x9b6c18c432a7bf8f0e71c8eb88f4b30baa2ba243 :: unit(8)-size(20)>>
-      okm = <<0x085a01ea1b10f36933068b56efa5ad81a4f14b822f5b091568a9cdd4f155fda2c22e422478d305f3f896 :: unit(8)-size(l)>>
+      prk = <<0x9B6C18C432A7BF8F0E71C8EB88F4B30BAA2BA243::unit(8)-size(20)>>
+
+      okm =
+        <<0x085A01EA1B10F36933068B56EFA5AD81A4F14B822F5B091568A9CDD4F155FDA2C22E422478D305F3F896::unit(
+            8
+          )-size(l)>>
+
       test_case(hash, ikm, salt, info, l, prk, okm)
     end
 
     test "sha-1 with longer input/ouputs" do
       hash = :sha
-      ikm = <<0x000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f404142434445464748494a4b4c4d4e4f :: unit(8)-size(80)>>
-      salt = <<0x606162636465666768696a6b6c6d6e6f707172737475767778797a7b7c7d7e7f808182838485868788898a8b8c8d8e8f909192939495969798999a9b9c9d9e9fa0a1a2a3a4a5a6a7a8a9aaabacadaeaf :: unit(8)-size(80)>>
-      info = <<0xb0b1b2b3b4b5b6b7b8b9babbbcbdbebfc0c1c2c3c4c5c6c7c8c9cacbcccdcecfd0d1d2d3d4d5d6d7d8d9dadbdcdddedfe0e1e2e3e4e5e6e7e8e9eaebecedeeeff0f1f2f3f4f5f6f7f8f9fafbfcfdfeff :: unit(8)-size(80)>>
+
+      ikm =
+        <<0x000102030405060708090A0B0C0D0E0F101112131415161718191A1B1C1D1E1F202122232425262728292A2B2C2D2E2F303132333435363738393A3B3C3D3E3F404142434445464748494A4B4C4D4E4F::unit(
+            8
+          )-size(80)>>
+
+      salt =
+        <<0x606162636465666768696A6B6C6D6E6F707172737475767778797A7B7C7D7E7F808182838485868788898A8B8C8D8E8F909192939495969798999A9B9C9D9E9FA0A1A2A3A4A5A6A7A8A9AAABACADAEAF::unit(
+            8
+          )-size(80)>>
+
+      info =
+        <<0xB0B1B2B3B4B5B6B7B8B9BABBBCBDBEBFC0C1C2C3C4C5C6C7C8C9CACBCCCDCECFD0D1D2D3D4D5D6D7D8D9DADBDCDDDEDFE0E1E2E3E4E5E6E7E8E9EAEBECEDEEEFF0F1F2F3F4F5F6F7F8F9FAFBFCFDFEFF::unit(
+            8
+          )-size(80)>>
+
       l = 82
-      prk = <<0x8adae09a2a307059478d309b26c4115a224cfaf6 :: unit(8)-size(20)>>
-      okm = <<0x0bd770a74d1160f7c9f12cd5912a06ebff6adcae899d92191fe4305673ba2ffe8fa3f1a4e5ad79f3f334b3b202b2173c486ea37ce3d397ed034c7f9dfeb15c5e927336d0441f4c4300e2cff0d0900b52d3b4 :: unit(8)-size(l)>>
+      prk = <<0x8ADAE09A2A307059478D309B26C4115A224CFAF6::unit(8)-size(20)>>
+
+      okm =
+        <<0x0BD770A74D1160F7C9F12CD5912A06EBFF6ADCAE899D92191FE4305673BA2FFE8FA3F1A4E5AD79F3F334B3B202B2173C486EA37CE3D397ED034C7F9DFEB15C5E927336D0441F4C4300E2CFF0D0900B52D3B4::unit(
+            8
+          )-size(l)>>
+
       test_case(hash, ikm, salt, info, l, prk, okm)
     end
 
     test "sha-1 with zero length salt/info" do
       hash = :sha
-      ikm = <<0x0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b :: unit(8)-size(22)>>
+      ikm = <<0x0B0B0B0B0B0B0B0B0B0B0B0B0B0B0B0B0B0B0B0B0B0B::unit(8)-size(22)>>
       salt = ""
       info = ""
       l = 42
-      prk = <<0xda8c8a73c7fa77288ec6f5e7c297786aa0d32d01 :: unit(8)-size(20)>>
-      okm = <<0x0ac1af7002b3d761d1e55298da9d0506b9ae52057220a306e07b6b87e8df21d0ea00033de03984d34918 :: unit(8)-size(l)>>
+      prk = <<0xDA8C8A73C7FA77288EC6F5E7C297786AA0D32D01::unit(8)-size(20)>>
+
+      okm =
+        <<0x0AC1AF7002B3D761D1E55298DA9D0506B9AE52057220A306E07B6B87E8DF21D0EA00033DE03984D34918::unit(
+            8
+          )-size(l)>>
+
       test_case(hash, ikm, salt, info, l, prk, okm)
     end
 
